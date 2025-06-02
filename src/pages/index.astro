@@ -72,11 +72,3 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))];
     </div>
   </div>
 </Layout>
-
-<script type="module">
-  import Alpine from "alpinejs";
-  window.Alpine = Alpine;
-  Alpine.start();
-  window.posts = $astro.raw.sortedPosts;
-  window.tags = $astro.raw.tags;
-</script>
