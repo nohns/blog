@@ -1,16 +1,84 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import PostCard from "../components/PostCard.astro";
+import Breadcrumb from "../components/Breadcrumb.astro";
 
+const posts = await getCollection("blog");
+const sortedPosts = posts.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout
+  title="Home | Your Blog Name"
+  description="Welcome to my blog about technology, programming, and more."
+>
+  <Breadcrumb segments={[]} />
+  <div
+    class="max-w-4xl mx-auto"
+    x-data="{
+    selected: [],
+    toggle(tag) {
+      if (this.selected.includes(tag)) {
+        this.selected = this.selected.filter(t => t !== tag)
+      } else {
+        this.selected.push(tag)
+      }
+    },
+    filteredPosts() {
+      if (this.selected.length === 0) return posts;
+      return posts.filter(post =>
+        this.selected.every(tag => post.data.tags && post.data.tags.includes(tag))
+      );
+    }
+  }"
+    x-init="$watch('selected', () => window.scrollTo(0,0))"
+  >
+    <h1 class="text-4xl font-bold mb-8 text-terminal-green">Posts</h1>
+    <div class="mb-8 flex flex-wrap gap-2">
+      {tags.map(tag => (
+        <button
+          type="button"
+          class="px-3 py-1 rounded border-2 transition-colors text-sm font-mono focus:outline-none focus:ring-2 focus:ring-terminal-green"
+          :class={`selected.includes('${tag}') 
+            ? 'border-terminal-green text-terminal-green bg-terminal-bg' 
+            : 'border-terminal-green/30 text-terminal-amber bg-transparent hover:bg-terminal-green/10'`}
+          @click={`toggle('${tag}')`}
+          x-text={`'#${tag}'`}
+        >#{tag}</button>
+      ))}
+      <button
+        type="button"
+        class="ml-2 px-3 py-1 rounded border border-terminal-green/30 text-terminal-cyan bg-transparent hover:bg-terminal-green/10 transition-colors text-sm font-mono focus:outline-none focus:ring-2 focus:ring-terminal-green"
+        x-show="selected.length > 0"
+        @click="selected = []"
+      >Clear</button>
+    </div>
+    <div class="space-y-8">
+      {sortedPosts.map((post) => (
+        <div
+          x-show="selected.length === 0 || selected.every(tag => JSON.parse($el.dataset.tags).includes(tag))"
+          data-tags={JSON.stringify(post.data.tags || [])}
+        >
+          <PostCard post={post} />
+        </div>
+      ))}
+      <div
+        x-show="selected.length > 0 && Array.from($el.parentElement.children).filter(el => el.hasAttribute('data-tags') && !el.classList.contains('hidden')).length === 0"
+        class="text-terminal-amber text-center py-8"
+      >
+        No posts match the selected tags.
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script type="module">
+  import Alpine from "alpinejs";
+  window.Alpine = Alpine;
+  Alpine.start();
+  window.posts = $astro.raw.sortedPosts;
+  window.tags = $astro.raw.tags;
+</script>

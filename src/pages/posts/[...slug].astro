@@ -1,0 +1,79 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout
+  title={`${post.data.title} | Your Blog Name`}
+  description={post.data.description}
+  image={post.data.image}
+>
+  <Breadcrumb segments={[{ name: "posts", href: "/" }]} />
+  <article class="max-w-4xl mx-auto">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold mb-4 text-terminal-green">
+        {post.data.title}
+      </h1>
+      <div class="flex items-center gap-4 text-sm text-terminal-text/60">
+        <time datetime={post.data.date.toISOString()}>
+          {
+            post.data.date.toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })
+          }
+        </time>
+        {
+          post.data.tags && (
+            <div class="flex gap-2">
+              {post.data.tags.map((tag) => (
+                <a
+                  href={`/tags/${tag}`}
+                  class="text-terminal-amber hover:text-terminal-cyan transition-colors"
+                >
+                  #{tag}
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </header>
+
+    {
+      post.data.image && (
+        <div class="mb-8">
+          <Image
+            src={post.data.image}
+            alt={post.data.title}
+            class="rounded-lg w-full"
+            width={800}
+            height={400}
+          />
+        </div>
+      )
+    }
+
+    <div
+      class="prose prose-invert prose-headings:text-terminal-green prose-a:text-terminal-cyan prose-strong:text-terminal-amber prose-code:text-terminal-green max-w-none"
+    >
+      <Content />
+    </div>
+  </article>
+</Layout>

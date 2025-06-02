@@ -1,0 +1,5 @@
+name = "terminal-blog"
+compatibility_date = "2024-03-20"
+
+[site]
+bucket = "./dist" 
