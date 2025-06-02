@@ -12,7 +12,7 @@ const BLOG_SUFFIX = "Nohns' Blog";
 const {
   pageTitle,
   description = "Welcome to my blog about Cloud-Native software, Kubernetes, Linux and more.",
-  image,
+  image = "/og-image.png",
 } = Astro.props;
 const title = pageTitle ? `${pageTitle} | ${BLOG_SUFFIX}` : BLOG_SUFFIX;
 
