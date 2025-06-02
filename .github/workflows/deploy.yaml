@@ -15,6 +15,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVKEY }}
           script: |
+            source ~/.profile
             cd ~/blog
             git pull
             npm install 
