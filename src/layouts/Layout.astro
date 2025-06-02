@@ -58,14 +58,16 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     {image && <meta name="twitter:image" content={image} />}
   </head>
   <body class="bg-terminal-bg text-terminal-text font-mono min-h-screen">
-    <header class="border-b border-terminal-green/20 py-4 max-w-4xl mx-auto">
-      <nav class="flex justify-between items-center">
+    <header class="border-b border-terminal-green/20 py-4 px-4">
+      <nav
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 max-w-4xl mx-auto"
+      >
         <a
           href="/"
           class="text-terminal-green hover:text-terminal-cyan transition-colors"
         >
           <pre
-            class="text-sm">
+            class="text-[10px] sm:text-xs">
  _   _       _               _   ____  _              
 | \ | | ___ | |__  _ __  ___( ) | __ )| | ___   __ _  
 |  \| |/ _ \| '_ \| '_ \/ __|/  |  _ \| |/ _ \ / _` | 
@@ -84,9 +86,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <div
         class="container mx-auto px-4 text-center text-sm text-terminal-text/60"
       >
-        <div class="flex items-center justify-center gap-4">
+        <div
+          class="flex flex-col sm:flex-row items-center sm:justify-center gap-4"
+        >
           <p>© {new Date().getFullYear()} Nohns' Blog</p>
-          <span class="text-terminal-text/40">|</span>
+          <span class="text-terminal-text/40 hidden sm:inline-block">|</span>
           <SocialLinks />
         </div>
       </div>
