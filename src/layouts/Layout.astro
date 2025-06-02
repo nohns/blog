@@ -1,11 +1,21 @@
 ---
+import SocialLinks from "../components/SocialLinks.astro";
+
 interface Props {
-  title: string;
+  pageTitle?: string;
   description?: string;
   image?: string;
 }
 
-const { title, description, image } = Astro.props;
+const BLOG_SUFFIX = "Nohns' Blog";
+
+const {
+  pageTitle,
+  description = "Welcome to my blog about Cloud-Native software, Kubernetes, Linux and more.",
+  image,
+} = Astro.props;
+const title = pageTitle ? `${pageTitle} | ${BLOG_SUFFIX}` : BLOG_SUFFIX;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
@@ -58,6 +68,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
                                                |___/  
           </pre>
         </a>
+        <SocialLinks />
       </nav>
     </header>
     <main class="container mx-auto px-4 py-8">
@@ -67,9 +78,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <div
         class="container mx-auto px-4 text-center text-sm text-terminal-text/60"
       >
-        <p>
-          © {new Date().getFullYear()} Nohns' Blog
-        </p>
+        <div class="flex items-center justify-center gap-4">
+          <p>© {new Date().getFullYear()} Nohns' Blog</p>
+          <span class="text-terminal-text/40">|</span>
+          <SocialLinks />
+        </div>
       </div>
     </footer>
     <script

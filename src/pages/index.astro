@@ -11,10 +11,8 @@ const sortedPosts = posts.sort(
 const tags = [...new Set(posts.flatMap((post) => post.data.tags || []))];
 ---
 
-<Layout
-  title="Home | Your Blog Name"
-  description="Welcome to my blog about technology, programming, and more."
->
+<Layout>
+
   <Breadcrumb segments={[]} />
   <div
     class="max-w-4xl mx-auto"
